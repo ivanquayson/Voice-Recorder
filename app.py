@@ -5,7 +5,17 @@ import sounddevice as sd
 from scipy.io.wavfile import write
 import wavio as wv
 
+import numpy as np
 import time
+
+
+# Normalize audio levels
+def normalize(audio):
+    max_val = np.max(np.abs(audio), axis=0)
+    if max_val == 0:
+        return audio
+    return audio / max_val
+
 
 # Sampling frequency
 freq = 48000
@@ -29,6 +39,9 @@ try:
     # Record audio for a given number of seconds
     sd.wait()
     print("Recording complete.")
+
+    # Normalize audio recording
+    recording = normalize(recording)
 
     scipy_file = f"{file_name}_scipy_wav"
     wavio_file = f"{file_name}_wavio_wav"
